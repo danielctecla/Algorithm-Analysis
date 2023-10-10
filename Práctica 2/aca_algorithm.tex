@@ -1,0 +1,774 @@
+\documentclass[12pt,twoside]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{amsmath}
+\usepackage[active]{srcltx}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{makeidx}
+\usepackage{amsthm}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage[spanish]{babel}
+
+\usepackage{fancyhdr}
+\usepackage{graphics}
+\usepackage{listings}
+
+
+%----------------------------------------------------------------------------------------------
+\usepackage{amsmath, amssymb}
+\usepackage{amsmath}
+\usepackage[active]{srcltx}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{makeidx}
+\usepackage[dvips]{graphicx}
+\usepackage{booktabs,array,arydshln}
+\usepackage[export]{adjustbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\usepackage{etoolbox}
+\usepackage[backend=biber]{biblatex}
+\bibliography{bibliografia}
+
+
+\renewcommand{\baselinestretch}{1}
+
+\setcounter{page}{1}
+\setlength{\textheight}{21.6cm}
+\setlength{\textwidth}{14cm}
+\setlength{\oddsidemargin}{1cm}
+\setlength{\evensidemargin}{1cm}
+\pagestyle{myheadings}
+\thispagestyle{empty}
+\markboth{\small{Pr\'actica 2. Catonga Tecla Daniel Isaí 1, Olguin Castillo Victor Manuel 2.}}{\small{.}}
+\date{}
+
+\begin{document}
+
+
+\begin{figure}[h]
+\vspace{-3cm} \hspace{-2cm} \setlength{\unitlength}{1mm}
+\begin{picture}(15,25)(-10,0)
+\includegraphics[width=16cm,height=3cm]{titulo.jpg}
+\end{picture}
+\end{figure}
+
+
+\vspace{0cm}
+
+\centerline{\bf Ingeniería en Inteligencia Artificial, An\'alisis y Diseño de Algoritmos}
+
+\centerline{\bf Sem: 2024-1, 3BV1, Pr\'actica 2, 27 de septimebre de 2023}
+
+\centerline{}
+
+%\centerline{}
+
+
+\begin{center}
+\Large{\textsc{Práctica 2: Complejidades temporales polinomiales y no polinomiales.}}
+\end{center}
+\centerline{}
+\centerline{\bf {Catonga Tecla Daniel Isaí 1, Olguin Castillo Victor Manuel 2.}}
+\centerline{}
+\centerline{$daniel9513importantes@gmail.com_1, manuelevansipn@gmail.com_2$}
+
+
+
+\newtheorem{Theorem}{\quad Theorem}[section]
+
+\newtheorem{Definition}[Theorem]{\quad Definition}
+
+\newtheorem{Corollary}[Theorem]{\quad Corollary}
+
+\newtheorem{Lemma}[Theorem]{\quad Lemma}
+
+\newtheorem{Example}[Theorem]{\quad Example}
+
+\bigskip
+
+\textbf{Resumen}Se propusieron dos ejercicios, los cuales se programaron en el lenguaje C++ para hacer un análisis a priori del algoritmo iterativo de la sucesión de Fibonacci y el análisis a posterior del algoritmo recursivo de la sucesión de Fibonacci y el algoritmo del cálculo de números perfectos, para así determinar su complejidad algorítmica, parael análisis a priori se ocupó el conteo de proceso para determinar una ecuación que represente su complejidad, para hacer análisis a posteriori ocupamos un método que consiste en usar contadores que aumenta en 1 cada que se realiza una operación en nuestros algoritmos, para así poder comparar la tasa de crecimiento de las operaciones realizadas en un peor caso y en un mejor caso. Estos datos obtenidos se graficaron con la página web DESMOS para poder ver de manera gráfica el comportamiento del algoritmo.
+
+
+
+
+
+
+{\bf Palabras Clave:} Algoritmo, C++, big $\Theta$, Complejidad Temporal
+
+%----------------------------------------------- INTRODUCCIÓN
+\newpage
+\section{Introducci\'on}
+Problemas como la serie de Fibonacci, que es una secuencia infinita de la suma de los dos números anteriores\cite{fibo}, o el problema de los números perfectos, que es la suma de los divisores de un número igual a ese mismo número entonces es perfecto\cite{key}, pueden resolverse parcialmente mediante el uso de algoritmos.
+\medskip
+
+
+Los algoritmos son de suma importancia ya que los algoritmos ayudan a la resolución de problemas muy grandes o complejos como problemas matemáticos y científicos, por lo tanto, los algoritmos son fundamentales en varias áreas de las ciencias o ingeniería. En la actualidad existen muchos algoritmos para resolver problemas como lo son algoritmos de ordenamiento, búsqueda, entre muchos otros tipos de algoritmos. 
+\medskip
+
+El análisis de los algoritmos es otra parte fundamental por lo que los algoritmos tienen que ser lo más eficientes posibles en complejidad temporal y complejidad espacial. En cuestión de complejidad temporal algunos algoritmos pueden requerir años en resolver un solo problema, por lo que, no es eficiente para la práctica en una empresa, y se opta por otros algoritmos que resuelvan el problema que presenten de una forma más eficaz. Por otra parte, una maquina no cuenta con recursos infinitos de memoria o espacio de almacenamiento, por lo que, existen algoritmos que ocupan mucho espacio de memoria y esto puede ocasionar problemas para equipos que no cuentan con el espacio suficiente, entonces se tiene que analizar también lo que es la complejidad espacial para tratar de ocupar la menor cantidad de memoria posible. Ambas complejidades son importantes, pero es más importante la complejidad temporal ya que las empresas pueden comprar más memorias de almacenamiento, pero no pueden comprar tiempo, por lo que algunas empresas optan sacrificar complejidad espacial por una complejidad temporal más eficiente.
+\medskip
+
+Los algoritmos de complejidad polinomial crecen de manera suave graficamente, mientras que los algortitmos de complejidad no polinomial crece de manera drástica, lo cual no favorece a la eficiencia de los algoritmos.
+
+\newpage
+\section{Conceptos Basicos}
+
+\begin{itemize}
+\item \textbf{Algoritmo}. Un algoritmo es una secuencia de pasos lógicos que son precisos, ordenados y finitos que se ocupan para resolver un problema deseado\cite{concep1}.
+
+\item \textbf{Análisis de  algoritmos}
+Es un proceso de evaluación donde conoceremos el rendimiento y la eficiencia de un algoritmo. Se evaluará el consumo de tiempo y de recursos computacionales que requiere el algoritmo para ser ejecutado con diversos datos de entrada, y esto determinará su complejidad\cite{concep1}.
+
+\item \textbf{Cota superior asintótica}. Es una función que delimita por la parte superior a otra función a medida que la entrada de la función delimitada crece.
+
+\item \textbf{Cota inferior asintótica}. Es una función que delimita por la parte inferior a otra función a medida que la entrada de la función delimitada crece.
+
+\item \textbf{Notacion O}. Esta notación se ocupa para describir la complejidad de un algoritmo definiendo una cota superior asintótica en el peor caso de ejecución de un algoritmo\cite{concep1}.
+\\
+\[O(g(n)) = \{ f : \mathbb{N} \rightarrow \mathbb{R}^+ \ | \ \exists \ c \text{ constante positiva y } n_0 \notin \mathbb{N} :\] 
+\[f(n) \leq cg(n), \ \forall \ n \geq n_0 \}\]
+
+\item \textbf{Notacion Tetha "$\Theta$"} Esta notación se ocupa para describir la complejidad de un algoritmo definiendo una cota superior y una cota inferior, esto nos da una idea más precisa del comportamiento y complejidad del mismo\cite{concep1}.
+\\
+\[\Theta(g(n) = \{f : \mathbb{N} \rightarrow \mathbb{R}^+ \,|\, \exists \, c_1, c_2 \text{ constantes positivas}, n_0 \,: \]
+\[0 < c_1g(n) \leq f(n) \leq c_2g(n), \forall \, n \geq n_0\}\]
+
+\item \textbf{Notacion Omega "$\Omega$"}  Esta notación se ocupa para describir la complejidad de un algoritmo definiendo una cota inferior asintótica en el peor caso de ejecución de un algoritmo\cite{concep1}.
+\\
+\[\Omega(g(n)) = \{f : \mathbb{N} \rightarrow \mathbb{R}^+ \,|\, \exists \, c \text{ constante positiva y } n_0 \,:\]
+\[0 < cg(n) \leq f(n), \forall \, n \geq n_0\}\]
+
+
+\item \textbf{Analisis a posteriori}. Es una evaluación que se realiza de forma empírica, donde los resultados se obtienen con la ejecución del algoritmo y la medición del tiempo y recursos computacionales que requiere\cite{concep1}.
+
+\item \textbf{Analisis a priori}. Es una evaluacion que se realiza de forma teorica, donde los resultados se pueden obtener con el conteo de operaciones y/o analisis matematico que en base a sus formulas se obtiene su complegidad algoritmica\cite{concep1}.
+
+
+\item \textbf{Sucesion de Fibonacci}. Es una secuencia matematica infinita que incia con los numeros 0 y 1, y el numero siguiente sera la suma de los dos numeros anteriores a este\cite{fibo}.\\
+
+\centerline{El tercer número es 0 + 1 = 1.}
+\centerline{El cuarto número es 1 + 1 = 2.}
+\centerline{El quinto número es 1 + 2 = 3.}
+
+\item \textbf{Numero perfecto}.Se le considera numero perfecto a aquel que la suma de sus divisores propios positivos da por por resultado el mismo numero\cite{key}.\\
+
+\centerline{Los divisores positivos de 28 son 1, 2, 4, 7 y 14.}
+\centerline{Si sumamos estos divisores: 1 + 2 + 4 + 7 + 14 = 28.}
+
+\item \textbf{Funciones recursivas}. En la programacion las funciones recursivas son aquellas que durante su proceso se invocan asi mismas.
+
+\begin{centering}
+\begin{verbatim}
+                    Suma_Recursiva(n):
+                    If n == 1
+                        return 1 
+                    Else
+                        return n + sumaRecursiva(n - 1)
+\end{verbatim}
+\end{centering}
+
+\item \textbf{Funciones iterativas}. En la programacion las funciones iterativas son aquellas se ejecuta en un ciclo n numero de veces y existe una condicion de validacion en cada iteracion que controla si se itera una ves mas o finaliza en ciclo
+
+\begin{centering}
+\begin{verbatim}
+                    Suma_iterativa(n):
+                    resultado = 0
+                    for i = 0 to n do:
+                        resultado += i
+                    return resultado
+\end{verbatim}
+\end{centering}
+\newpage
+
+\item \textbf{Pseudocodigo Sucesion de Fibonacci version iterativa}\\
+
+\begin{centering}
+\begin{verbatim}
+fibonacci_iterativa(num_anterior, num_actual, n)
+for i = 0 to n do
+    print num_actual
+    aux = num_actual;
+    num_actual += num_anterior;
+    num_anterior = aux;
+
+
+\end{verbatim}
+\end{centering}
+
+\item \textbf{Pseudocodigo Sucesion de Fibonacci version recursiva}
+
+\begin{centering}
+\begin{verbatim}
+fibonacci_recursiva(num_anterior, num_actual, n)
+    if n == 0
+        return
+    else
+        print num_actual
+        fibonacci_recursiva(num_actual, num_actual + num_anterior, n-1); 
+
+\end{verbatim}
+\end{centering}
+
+\item \textbf{Pseudocódigo Perfecto}.
+El algoritmo de Perfecto dice si el número n es perfecto o no, haciendo la suma de sus divisores con un for, retorna un 0 si el número no es perfecto y retorna un 1 si es perfecto.
+\begin{center}
+\begin{verbatim}
+                    Perfecto(n):
+                    contador = 0
+                    for i = 1 to i = n-1 do
+                      if n%i == 0
+                        contador = contador + i
+                    if contador == n
+                      retorna 1
+                    retorna 0
+\end{verbatim}
+\end{center}
+\newpage
+\item \textbf{Pseudocódigo MostrarPerfectos}.
+El algoritmo de MostrarPerfectos, muestra n números perfectos, para cuando $n=2$ muestra dos números perfectos tal que el output es: [$6,28$]. Utiliza la función Perfecto para calcular los números perfectos.
+\begin{center}
+\begin{verbatim}
+                    MostrarPerfectos(n):
+                    contador = 0
+                    for i = 1 to contador != n do
+                      if Perfecto(i) do
+                        imprime i
+                        contador = contador + i 
+\end{verbatim}
+\end{center}
+
+\end{itemize}
+\newpage
+%------------------------------------------- EXPERIMENTACIÓN Y RESULTADOS
+\section{Experimentación y Resultados}
+\textbf{Ejercicio 2\\}
+ 
+Una vez escritas las funciones (iterativo y recursivo) de la sucesión de fibonacci  en C++, se  procedió a hacer el análisis a priori de la función iterativa, por lo que se enumeraron el número de procesos que contiene la función (Imagen.1) y se creó la (tabla.1) donde se colocó el costo de cada proceso y el número de pasos ejecutados. \\
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.6\linewidth]{Imagen1.png}
+    \\
+    Imagen 1:Conteo de procesos
+\end{minipage}
+\end{center}
+\medskip
+
+\begin{table}[h]
+    \centering
+    \begin{minipage}{.45\linewidth}
+      \centering
+      \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Indice Fibonacci} & \textbf{\# Pasos ejecutados} \\
+        \hline
+
+    C1  & n+1 \\
+    C2  & n \\
+    C3  & n \\
+    C4  & n \\
+   
+        \hline
+      \end{tabular}
+      \caption{costo vs pasos}
+      \label{tab:nombre_etiqueta}
+    \end{minipage}
+\end{table}
+\vspace{15pt}
+
+
+1) Se ejecuta n+1 veces, ya que el ciclo recorrerá de 0 hasta n-1 (n ejecuciones) y se ejecuta una última vez donde ya no se cumple la condición, lo que significa que se ejecuta n+1 veces.\\  \\
+2) Se ejecuta n veces, ya que este proceso se encuentra dentro del ciclo for que itera desde 0 hasta n-1 (n ejecuciones)\\ \\
+3) Se ejecuta n veces, ya que este proceso se encuentra dentro del ciclo for que itera desde 0 hasta n-1 (n ejecuciones)\\ \\
+4) Se ejecuta n veces, ya que este proceso se encuentra dentro del ciclo for que itera desde 0 hasta n-1 (n ejecuciones)\\ \\
+Se sabe que para calcular la complejidad algorítmica usando el análisis a priori se multiplica el costo computación de cada proceso por el número de pasos ejecutados, por lo que tendríamos la (ecuación.1), lo que nos indica que este algoritmo tiene una complejidad lineal\\ \\
+\centerline{T(n) = C1(n + 1) + C2n + C3n + C4n}
+\centerline{T(n) = C1 + C1n + C2n + C3n + C4n}
+\centerline{T(n) = (C1 + C2 + C3 + C4)n + C1}
+\centerline{a = (C1 + C2 + C3 + C4) , b = C1}
+\centerline{T(n) = an + b}
+\centerline{ $\therefore$ T(n) $\in$ $\theta$ (n) }
+\\ \\
+Ahora, ya que conocemos la complejidad algorítmica con el análisis a priori, se verá cómo se comporta el análisis a posteriori, para eso se colocan contadores en cada proceso de nuestra función en C++ y se contará cuántos procesos se ejecutan en comparación a qué índice de la sucesión de Fibonacci se calcula, el programa mostró la salida mostrada en la (Imagen.2) y los resultados del conteo se muestran en la (tabla.2) y la gráfica de estos datos la podemos ver en (gráfica.1), en ambos análisis concuerda su complejidad, por lo que podemos decir que la versión iterativa de la sucesión de Fibonacci tiene complejidad lineal.
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{imagen2.png}
+    \\
+    Imagen 2: Resultados de la ejecucion del algoritmo iterativo
+\end{minipage}
+\end{center}
+\medskip
+
+
+
+\begin{table}[h]
+    \centering
+    \begin{minipage}{.45\linewidth}
+      \centering
+      \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Indice Fibonacci} & \textbf{\# Pasos ejecutados} \\
+        \hline
+
+    1	& 5 \\
+    2	& 9 \\
+    3	& 13 \\
+    4	& 17 \\
+    5	& 21 \\
+    6	& 25 \\
+    7	& 29 \\
+    8	& 33 \\
+    9	& 37 \\
+    10	& 41 \\
+    11	& 45 \\
+    12 & 49 \\
+    13 & 53 \\
+    14 & 57 \\
+    15 & 61 \\
+    16 & 65 \\
+    17 & 69 \\
+    18 & 73 \\
+    19 & 77 \\
+    20 & 81 \\
+    \vdots & \vdots\\
+   
+        \hline
+      \end{tabular}
+      \caption{Analisis a priori algoritmo iterativo}
+      \label{tab:nombre_etiqueta}
+    \end{minipage}
+\end{table}
+
+\newpage
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{grafica1.png}
+    \\
+    Grafica.1 (Indice vs \# procesos)
+\end{minipage}
+\end{center}
+
+\newpage
+
+Una funcion que cree una cota superior es $g(n) = 4.5x$ y y una cota inferior es $z(n) = 3.5x$, y se muestra en la (grafica.2)
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{grafica1_ac.png}
+    \\
+    Grafica.2 (Indice vs \# procesos)
+\end{minipage}
+\end{center}
+
+El siguiente paso fue hacer el análisis a posteriri de la versión recursiva de la sucesión de Fibonacci, para esto se encontró dos maneras diferentes de realizar la función. La primera opción es sin memorización, en la que se realizan los mismos cálculos una y otra vez cada vez que se calcule un nuevo número de la sucesión.La segunda opción es con memorización en la que se almacenan en memoria los resultados  calculados anteriormente para evitar recalcularlos, esto reduce demasiado la cantidad de cálculos.
+\\\\
+Primero se hizo el análisis a posteriori de la función recursiva sin memoria, por lo que colocamos contadores en cada línea de código y se contará cuántos procesos se ejecutan en comparación a qué índice de la sucesión de fibonacci se calcula, el programa mostró la salida mostrada en la (imagen.3) y  los resultados se muestran en la (tabla.3) y la gráfica de estos datos la podemos ver en (gráfica.3)
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{imagen3.png}
+    \\
+    Imagen 3: Ejecucion del programa recursivo sin memoria
+\end{minipage}
+\end{center}
+\medskip
+
+\begin{table}[h]
+    \centering
+    \begin{minipage}{.45\linewidth}
+      \centering
+      \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Indice Fibonacci} & \textbf{\# Pasos ejecutados} \\
+        \hline
+
+    1 & 2 \\
+    2 & 2 \\
+    3 & 6 \\
+    4 & 10 \\
+    5 & 18 \\
+    6 & 30 \\
+    7 & 50 \\
+    8 & 82 \\
+    9 & 134 \\
+    10 & 218 \\
+    11 & 354 \\
+    12 & 574 \\
+    13 & 930 \\
+    14 & 1506 \\
+    15 & 2438 \\
+
+    \vdots & \vdots\\
+
+       
+        \hline
+      \end{tabular}
+      \caption{Analisis a priori algoritmo recursivo sin memoria}
+      \label{tab:nombre_etiqueta}
+    \end{minipage}
+\end{table}
+
+
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{grafica2.png}
+    \\
+    Grafica.3 (Indice vs \# procesos)
+\end{minipage}
+\end{center}
+\medskip
+
+Una funcion que cree una cota superior es $g(n) = \ 2^{.73n}$ y y una cota inferior es $g(n) = \ 2^{.7n}$, y se muestra en la (grafica.4)
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{grafica3_ac.png}
+    \\
+    Grafica.4 (Indice vs \# procesos)
+\end{minipage}
+\end{center}
+\medskip
+
+Al ejecutar el programa e insertar un n\textgreater   50  tardaba demasiado debido a la cantidad de procesos, lo que ocasiona una gran cantidad de cálculos redundantes y un tiempo de ejecución exponencial a medida que n aumenta, por lo que este método es demasiado ineficiente y provoca un desbordamiento de memoria con n demaciados grandes.
+
+
+
+Después se procedió a hacer el análisis a posteriori de la función recursiva con memoria, por lo que colocamos contadores en cada línea de código y se contará cuántos procesos se ejecutan en comparación a qué índice de la sucesión de fibonacci se calcula, el programa mostró la salida mostrada en la (imagen.4) y  los resultados se muestran en la (tabla.4) y la gráfica de estos datos la podemos ver en (gráfica.5)
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{imagen4.png}
+    \\
+    Imagen 4: Ejecucion del programa recursivo con memoria
+\end{minipage}
+\end{center}
+\medskip
+
+\begin{table}[h]
+    \centering
+    \begin{minipage}{.45\linewidth}
+      \centering
+      \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Indice Fibonacci} & \textbf{\# Pasos ejecutados} \\
+        \hline
+
+    1	& 2 \\
+    2	& 4 \\
+    3	& 6 \\
+    4	& 8 \\
+    5	& 10 \\
+    6	& 12 \\
+    7	& 14 \\
+    8	& 16 \\
+    9	& 18 \\
+    10 & 20 \\
+    11 & 22 \\
+    12 & 24 \\
+    13 & 26 \\
+    14 & 28 \\
+    15 & 30 \\
+    \vdots & \vdots\\
+
+       
+        \hline
+      \end{tabular}
+      \caption{Analisis a priori algoritmo recursivo con memoria}
+      \label{tab:nombre_etiqueta}
+    \end{minipage}
+\end{table}
+
+
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{grafica3.png}
+    \\
+    Grafica.5 (Indice vs \# procesos)
+\end{minipage}
+\end{center}
+\medskip
+
+\newpage
+
+Una funcion que cree una cota superior es $g(n) = \ 2^{.73n}$ y y una cota inferior es $g(n) = \ 2^{.7n}$, y se muestra en la (grafica.7)
+
+\begin{center}
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{grafica7_.png}
+    \\
+    Grafica. 7 (Indice vs \# procesos)
+\end{minipage}
+\end{center}
+\medskip
+
+Se observó que la función recursiva con memoria se comporta de manera lineal, por lo que esto resulta más eficiente en comparación a su versión sin memoria.
+\newpage
+\textbf{Algoritmo 2. Perfecto y MostrarPerfectos}
+\medskip
+
+\textbf{Análisis a priori Perfecto.} 
+El análisis a priori del algoritmo 2 se basa con la tabla n que se muestra. La tabla 5 muestra el costo de número de pasos de cada instrucción del pseudocódigo el cual es calculado. 
+\medskip
+
+\begin{minipage}{0.45\linewidth}
+  \textbf{Algoritmo 2: Perfecto}\label{alg:cap}\\ 
+  Perfecto(n)
+  \begin{tabular}{l}
+    1. $contador = 0$ \\
+    2. for i=1 to i=n-1 do\\
+    3. \quad if n\%i == 0 do\\
+    4. \quad \quad contador = contador + i\\
+    5. if contado == n do \\
+    6. \quad Retorna 1  \\
+    7. Retorna 0 \\
+  \end{tabular}
+\end{minipage}\hfill
+\begin{minipage}{0.45\linewidth}
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Costo} & \textbf{\# de pasos} \\
+    \hline
+    $C_1$  & 1 \\
+    $C_2$  & $n$ \\
+    $C_3$  & $n-1$ \\
+    $C_4$  & 1 \\
+    $C_5$  & 1 \\
+    $C_6$  & 1 \\
+    $C_7$  & 1 \\
+    \hline
+  \end{tabular}
+  \par
+  Tabla 5. Tabla de análisis a priori.
+\end{minipage}
+
+\medskip
+
+El tiempo de ejecución es igual a la suma de los productos de costo del número de pasos ejecutados línea por línea. Por lo que:
+
+\begin{center}
+  $T(n)=C_1+C_2n+C_3(n-1)+C_4+C_5+C_6+C_7$
+  \par
+  $T(n)=C_2n+C_3n+C_1-C_3+C_4+C_5+C_6+C_7$
+  \medskip
+  $T(n)=n(C_2+C_3)+(C_1-C_3+C_4+C_5+C_6+C_7)$
+\end{center}
+
+\medskip
+
+Para el algoritmo de Perfecto no hay peor caso o mejor caso, si el número es mayor entonces su crecimiento es lineal siempre, por lo que,
+no tiene un aumento cuadrático o de otra forma que no sea lineal. Por lo tanto, el agoritmo es el mismo en el peor y mejor caso, se denota como:
+
+\begin{center}
+  $T(n)=n(C_2+C_3)+(C_1-C_3+C_4+C_5+C_6+C_7)$
+  $T(n)=an+b \text{ con }a=C_2+C_3 \text{ y }$
+  $b=C_1-C_3+C_4+C_5+C_6+C_7$
+  \par
+
+  $\therefore T(n)\in \Theta(n)$
+\end{center}
+
+\newpage
+\textbf{Análisis a posteriori Perfecto.}
+El algoritmo en ejecución se muestra en la imagen 5 y el número de pasos se muestra en la tabla 6, el número de pasos es con respecto a la ejecución del algoritmo Perfecto. Los datos
+muestran un aumento lineal en la complejidad a medida que n crece. Se muestran variaciones en ciertos casos, pero no son variaciones significativas que sugieran un crecimiento
+cuadrático u otro tipo de complejidad.
+\medskip
+
+\begin{minipage}{.45\linewidth}
+  \centering
+  \includegraphics[width=0.4\linewidth]{a2i1.png}
+  \\
+  Imagen 5. Ejecución algoritmo Perfecto.
+\end{minipage}\hfill
+\begin{minipage}{.45\linewidth}
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Valor de $n$} & \textbf{\# de pasos} \\
+    \hline
+    2  & 9 \\
+    3  & 12 \\
+    4  & 16 \\
+    5  & 18 \\
+    6  & 23 \\
+    7  & 24 \\
+    8  & 29 \\
+    9  & 31 \\
+    10 & 35 \\
+    11 & 36 \\
+    12 & 43 \\
+    13 & 42 \\
+    14 & 47 \\
+    15 & 50 \\
+    \vdots & \vdots\\
+    \hline
+  \end{tabular}
+  \\
+  Tabla 6. Datos de algoritmo Perfecto.
+\end{minipage}
+\medskip
+
+Los datos de ejecución del algoritmo Perfecto se muestran en una gráfica en la gráfica 6. El algoritmo muestra un
+crecimiento lineal demostrando que para peor y mejor caso es el mismo, la gráfica es lineal por lo que esto se denota como
+$\Theta(n)$.
+
+\medskip
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=0.7\linewidth]{a2i2.png}
+  \\
+  Gráfica 6. Grafica del comportamiento del algoritmo Perfecto.
+\end{minipage}
+\newpage
+
+En la gráfica 7 se muestra la función tal que $g(n)=\frac{10}{3}n$ acota por arriba al algoritmo y $z(n)=\frac{8}{3}n$ acota por abajo al algoritmo, y el ajuste asíntotico es para cuando $n_0\geq 300$. En la gráfica 8 se muestra que $f(n)$ esta delimitado por $g(n)$ y $z(n)$ cuando $n\geq n_0$.
+\medskip
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.7\linewidth]{a2i3.png}
+    \\
+    Figura 7. Gráfica con acotación para $f(n)$.
+  \end{center}
+\end{figure}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.7\linewidth]{a2i4.png}
+    \\
+    Figura 8. Gráfica para valor $n_0$.
+  \end{center}
+\end{figure}
+
+\newpage
+
+\textbf{Análisis a posteriori MostrarPerfectos.}
+La ejecución del algoritmo 'MostrarPerfectos' se muestra en la imagen 6, con una entrada tal que $n=5$. La particularidad del algoritmo es que no puede calcular el quinto número perfecto, el número de pasos para valores de $n$ desde $1$ hasta $4$ se muestran en la tabla 7. Sin embargo, para valores de $n$ mayores o iguales a $5$, no se muestran en la tabla porque el algoritmo no lo puede calcular.
+\medskip
+
+\begin{minipage}{.45\linewidth}
+  \centering
+  \includegraphics[width=0.4\linewidth]{a2i5.png}
+  \\
+  Imagen 6. Ejecución algoritmo 'MostrarPerefectos'.
+\end{minipage}\hfill
+\begin{minipage}{.45\linewidth}
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Valor de $n$} & \textbf{\# de pasos} \\
+    \hline
+    1  & 98 \\
+    2  & 1430 \\
+    3  & 374917 \\
+    4  & 992155729 \\
+    5  & $\text{sin valor}$ \\
+    6  & $\text{sin valor}$ \\
+    \vdots & \vdots\\
+    \hline
+  \end{tabular}
+  \\
+  Tabla 7. Datos de algoritmo 'MostrarPerfecto'.
+\end{minipage}
+\medskip
+
+La gráfica que genera los puntos de la tabla de $n$ desde $1$ hasta $4$ se muestra en la gráfica 9. Dado que los valores son muy distintos entre sí, la escala de la gráfica no deja ver el comportamiento del algoritmo. Por lo tanto, en la gráfica 10 se muestran únicamente los dos primeros puntos, donde ya se puede observar el comportamiento de la gráfica y se muestra que aumenta significativamente del punto 2 con respecto del punto 1.
+
+\medskip
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.7\linewidth]{a2i6.png}
+    \\
+    Gráfica 9. Gráfica del comportamiento de 'MostrarPerfectos'.
+  \end{center}
+\end{figure}
+\newpage
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{a2i7.png}
+    \\
+    Gráfica 10. Gráfica de los primeros dos puntos de 'MostrarPerfectos'.
+  \end{center}
+\end{figure}
+\medskip
+
+La función tal que $g(n)=2^{7n}$ acota la gráfica por arriba y $z(n)=2^{5n}$ acota por abajo a los dos primeros puntos se muestra en la gráfica 11, y también a los otros dos puntos restantes como se muestra en la gráfica 12. El ajuste asíntotico es para cuando $n_0\geq 1$, se muestra en la gráfica 13 que $f(n)$ esta delimitado por $g(n)$ y $z(n)$ cuando $n\geq n_0$.
+\medskip
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.6\linewidth]{a2i8.png}
+    \\Gráfica 11. Gráfica primeros dos puntos con acotación para $f(n)$.
+  \end{center}
+\end{figure}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.6\linewidth]{a2i9.png}
+    \\
+    Gráfica 12. Gráfica dos puntos restantes con acotación para $f(n)$.
+  \end{center}
+\end{figure}
+\newpage
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.6\linewidth]{a2i10.png}
+    \\
+    Gráfica 13. Gráfica para valor $n_0$.
+  \end{center}
+\end{figure}
+%--------------------------
+\newpage
+\section{Conclusiones}
+
+El algoritmo de 'Perfecto' y 'Fibonacci' en su forma iterativa se pudieron resolver de forma eficiente, ambos algoritmos son big $\Theta(n)$, ya que ambos son lineales. La particularidad de los otros algoritmos es que el algoritmo 'Fibonacci' en su forma recursiva
+tienen un crecimiento exponencial al igual que el algoritmo de 'MostrarPerfectos', estos algoritmos tienen un crecimiento muy drástico a medida que $n$ crece por lo que los algoritmos no son eficientes en lo práctico, ya que un algoritmo tiene que ser lo más eficiente posible, ambos algoritmos son $\Theta(2^n)$.
+
+\medskip
+
+Conclusiones Catonga Tecla Daniel Isaí 1
+\par
+Con los algoritmos que se desarrollaron en la práctica aprendí porque los algoritmos exponenciales no son eficientes para el uso de estos, por lo que, siempre se tiene que buscar la mejor forma en la que sea eficiente un algoritmo porque sino el algoritmo no podrá realizar el algoritmo para cuando $n$ sea un número muy grande, en el caso de los algoritmos exponenciales. Por otra parte
+aprendí que los algoritmos no siempre resulven el problema que se tiene, es decir, se puede tener un problema y crear un algoritmo pero por limitaciones de una computadora, este podrá solucionar el problema parcialmente, es decir que solo obtendrá el resultado para un rango muy pequeño de lo que abarca el problema, por ejemplo el problema de mostrar $n$ perfectos, se observó que el algoritmo no
+puede calcular el quinto número perfecto. En está práctica se aprendieron cosas importantes sobre el análisis de algoritmos.
+
+\medskip
+
+Conclusiones Olguin Castillo Victor Manuel 2
+\par
+Al terminar esta practica reforce mis conociminetos sobre funciones recursivas, ya que sabia lo que eran y como funcionaban, pero muy pocas veces las habia implementado en un programa, ahora puedo saber como convertir una funcion iterativa en una recursiva; tambien aprendi que una funcion recursiva no es sinonimo de eficiencia el concepto de "con/sin memoria" influye en la eficicnecia de este.
+
+\newpage
+\section{Bibliograf\'ia}
+
+\printbibliography[title={ }]
+
+
+
+\medskip
+
+
+
+
+
+
+
+
+
+
+\end{document}
