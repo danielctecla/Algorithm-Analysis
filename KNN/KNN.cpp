@@ -75,7 +75,7 @@ int classification(vector<vector <float>> & vect,float x, float y,int k,int *a){
 
     cout<<"Vecinos más cercanos al punto: "<<endl;
     for (int i=0;i<k;i++)
-        cout<<dist[i][0] << "," << dist[i][1] << endl;
+        cout<<dist[i][0] << "," << dist[i][1]<<endl;
     
     int class0 = 0, class1 = 0;(*a)++;
     (*a)++;
