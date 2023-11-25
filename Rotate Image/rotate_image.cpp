@@ -2,6 +2,30 @@
 
 using namespace std;
 
+#pragma pack(push, 1) // Asegura que las estructuras se alineen en 1 byte
+struct BMPHeader {
+    char signature[2];
+    uint32_t fileSize;
+    uint16_t reserved1;
+    uint16_t reserved2;
+    uint32_t dataOffset;
+};
+
+struct BITMAPINFOHEADER {
+    uint32_t headerSize;
+    int32_t width;
+    int32_t height;
+    uint16_t planes;
+    uint16_t bitCount;
+    uint32_t compression;
+    uint32_t imageSize;
+    int32_t xPixelsPerMeter;
+    int32_t yPixelsPerMeter;
+    uint32_t colorsUsed;
+    uint32_t colorsImportant;
+};
+#pragma pack(pop)
+
 struct bitBMP{
     char red;
     char green;
@@ -16,10 +40,21 @@ void rotateMatrix(vector<vector<bitBMP>> & matrix);
 void rotate_divide_conquer(vector<vector<bitBMP>>& matrix, int size);
 
 int main (){
-    int width = 8, option;
-    vector<vector<bitBMP>> matrix(width,vector<bitBMP>(width));
+    int width, option;
+    
     ifstream file ("input.bmp", ios::binary );
-
+    BMPHeader header;
+    BITMAPINFOHEADER infoHeader;
+    file.read(reinterpret_cast<char*>(&header), sizeof(BMPHeader));
+    file.read(reinterpret_cast<char*>(&infoHeader), sizeof(BITMAPINFOHEADER));
+    // Leer la información de la imagen BMP
+    width = static_cast<int>(infoHeader.width);
+    int height = static_cast<int>(infoHeader.height);
+    // Mostrar información de lSa imagen
+    cout << "Ancho de la imagen: " << width << " pixels" << endl;
+    cout << "Altura de la imagen: " << height << " pixels" << endl;
+    vector<vector<bitBMP>> matrix(width,vector<bitBMP>(width));
+    
     if (file.is_open()){
         file.seekg(0, ios::end);
         streampos tam = file.tellg();
@@ -127,39 +162,33 @@ void descomponerB (char* arreglo, streampos tam){
     delete[] arregloB;
 }
 
-void rotate_divide_conquer(vector<vector<bitBMP>>& matrix, int size) {
-    if (size <= 1) {
-        return;
-    }
-
-    // Dividir la submatriz en cuatro partes
-    vector<vector<bitBMP>> a(size/2, vector<bitBMP>(size/2));
-    vector<vector<bitBMP>> b(size/2, vector<bitBMP>(size/2));
-    vector<vector<bitBMP>> c(size/2, vector<bitBMP>(size/2));
-    vector<vector<bitBMP>> d(size/2, vector<bitBMP>(size/2));
-
-    for (int i = 0; i < size/2; ++i) {
-        for (int j = 0; j < size/2; ++j) {
+void rotate_divide_conquer(vector<vector<bitBMP>>& matrix, int n) {
+    if (n <= 1) return;
+    vector<vector<bitBMP>> a(n/2, vector<bitBMP>(n/2));
+    vector<vector<bitBMP>> b(n/2, vector<bitBMP>(n/2));
+    vector<vector<bitBMP>> c(n/2, vector<bitBMP>(n/2));
+    vector<vector<bitBMP>> d(n/2, vector<bitBMP>(n/2));
+    
+    for (int i = 0; i < n/2; ++i) {
+        for (int j = 0; j < n/2; ++j) {
             a[i][j] = matrix[i][j];
-            b[i][j] = matrix[i][j + size/2];
-            c[i][j] = matrix[i + size/2][j];
-            d[i][j] = matrix[i + size/2][j + size/2];
+            b[i][j] = matrix[i][j + n/2];
+            c[i][j] = matrix[i + n/2][j];
+            d[i][j] = matrix[i + n/2][j + n/2];
         }
     }
-
-    // Rotar las submatrices recursivamente
-    rotate_divide_conquer(a, size/2); //esquina superior izquierda
-    rotate_divide_conquer(b, size/2); //esquina superior derecha
-    rotate_divide_conquer(c, size/2); //esquina inferior izquierda
-    rotate_divide_conquer(d, size/2); //esquina inferior derecha
-
-    // Combinar las submatrices rotadas
-    for (int i = 0; i < size/2; ++i) {
-        for (int j = 0; j < size/2; ++j) {
+    
+    rotate_divide_conquer(a, n/2);
+    rotate_divide_conquer(b, n/2);
+    rotate_divide_conquer(c, n/2);
+    rotate_divide_conquer(d, n/2);
+    
+    for (int i = 0; i < n/2; ++i) {
+        for (int j = 0; j < n/2; ++j) {
             matrix[i][j] = c[i][j];
-            matrix[i][j + size/2] = a[i][j];
-            matrix[i + size/2][j] = d[i][j];
-            matrix[i + size/2][j + size/2] = b[i][j];
+            matrix[i][j + n/2] = a[i][j];
+            matrix[i + n/2][j] = d[i][j];
+            matrix[i + n/2][j + n/2] = b[i][j];
         }
     }
 }
